@@ -124,9 +124,9 @@ print('y shape:', y_train.shape)
 index_gray = random.randint(0, len(X_train_gray))
 image_gray = X_train_gray[index_gray].squeeze()
 
-plt.figure(figsize=(1,1))
-plt.title(y_train[index_gray])
-plt.imshow(image_gray, cmap='gray')
+#plt.figure(figsize=(1,1))
+#plt.title(y_train[index_gray])
+#plt.imshow(image_gray, cmap='gray')
 
 image_shape = X_train_gray[0].shape
 x = tf.placeholder(tf.float32, (None, 32, 32, image_shape[2]))
@@ -149,9 +149,9 @@ N_EPOCHS = 10
 index = random.randint(0, len(X_train_gray))
 image = X_train_gray[index].squeeze()
 
-plt.figure(figsize=(1,1))
-plt.title(y_train[index])
-plt.imshow(image)
+#plt.figure(figsize=(1,1))
+#plt.title(y_train[index])
+#plt.imshow(image)
 
 X_train_gray, y_train = shuffle(X_train_gray, y_train)
 

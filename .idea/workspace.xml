@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="80502b25-aa7f-412b-8e56-1e1aa94909c3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Traffic_Sign_Classifier.py" afterPath="$PROJECT_DIR$/Traffic_Sign_Classifier.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Grayscaled.ipynb" afterPath="$PROJECT_DIR$/Grayscaled.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Template Model.ipynb" afterPath="$PROJECT_DIR$/Template Model.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Raw.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -177,12 +176,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1511649626103</updated>
-      <workItem from="1511649631437" duration="664000" />
+      <workItem from="1511649631437" duration="833000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="664000" />
+    <option name="totallyTimeSpent" value="833000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="0" />

@@ -135,9 +135,9 @@ def evaluate(X_data, y_data):
 
 # Normalization to center the image value distribution at 0.
 # As recommended, image normalization is by (x - 128) / 128
-X_train_normalized_gray = (X_train_gray - 128)/128
-X_test_normalized_gray = (X_test_gray - 128)/128
-X_validation_normalized_gray = (X_validation_gray - 128)/128
+X_train_normalized_gray = (X_train_gray - 128.0)/128.0
+X_test_normalized_gray = (X_test_gray - 128.0)/128.0
+X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
 
 print(np.mean(X_train_normalized_gray))
 print(np.mean(X_test_normalized_gray))

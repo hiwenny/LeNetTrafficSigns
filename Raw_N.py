@@ -134,10 +134,10 @@ def evaluate(X_data, y_data):
 # NORMALIZED RGB
 
 # Normalization to center the image value distribution at 0.
-# As recommended, image normalization is by (x - 128) / 128
-X_train_normalized = (X_train - 128.0)/128
-X_test_normalized = (X_test - 128.0)/128
-X_validation_normalized = (X_validation - 128)/128
+# As recommended, image normalization is by (x - 128.0) / 128.0
+X_train_normalized = (X_train - 128.0)/128.0
+X_test_normalized = (X_test - 128.0)/128.0
+X_validation_normalized = (X_validation - 128.0)/128.0
 
 print(np.mean(X_train_normalized))
 print(np.mean(X_test_normalized))
@@ -150,9 +150,9 @@ N_EPOCHS = 10
 index = random.randint(0, len(X_train_normalized))
 image = X_train_normalized[index].squeeze()
 
-plt.figure(figsize=(1,1))
-plt.title(y_train[index])
-plt.imshow(image)
+#plt.figure(figsize=(1,1))
+#plt.title(y_train[index])
+#plt.imshow(image)
 
 X_train_normalized, y_train = shuffle(X_train_normalized, y_train)
 

@@ -133,18 +133,30 @@ def evaluate(X_data, y_data):
 
 # NORMALIZED GRAY
 
+def convert_to_grayscale(X_data):
+    bat = []
+    for i in range(0, len(X_data)):
+        image = cv2.cvtColor(X_data[i], cv2.COLOR_RGB2GRAY)
+        bat.append(image)
+    X_data = np.reshape(bat, (-1, 32, 32, 1))
+    return X_data
+
 # Convert image to grayscale
 X_train_gray = convert_to_grayscale(X_train)
-X_test_gray = convert_to_grayscale(X_test)
-X_validation_gray = convert_to_grayscale(X_validation)
+X_test_gray = X_test
+#X_test_gray = convert_to_grayscale(X_test)
+#X_validation_gray = convert_to_grayscale(X_validation)
+X_validation_gray = X_validation
 
 X_train_gray, y_train = shuffle(X_train_gray, y_train)
 
 # Normalization to center the image value distribution at 0.
 # As recommended, image normalization is by (x - 128) / 128
 X_train_normalized_gray = (X_train_gray - 128.0)/128.0
-X_test_normalized_gray = (X_test_gray - 128.0)/128.0
-X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
+X_test_normalized_gray = X_test_gray
+X_validation_normalized_gray = X_validation_gray
+#X_test_normalized_gray = (X_test_gray - 128.0)/128.0
+#X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
 
 print(np.mean(X_train_normalized_gray))
 print(np.mean(X_test_normalized_gray))

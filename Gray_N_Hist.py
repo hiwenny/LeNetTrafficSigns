@@ -130,10 +130,23 @@ def evaluate(X_data, y_data):
 
 # ==================================================== #
 
+## Convert image to grayscale
+#X_train_gray = cv2.cvtColor(X_train, cv2.COLOR_BGR2GRAY)
+#X_test_gray = cv2.cvtColor(X_test, cv2.COLOR_BGR2GRAY)
+#X_validation_gray = cv2.cvtColor(X_validation, cv2.COLOR_BGR2GRAY)
+
+def convert_to_grayscale(X_data):
+    bat = []
+    for i in range(0, len(X_data)):
+        image = cv2.cvtColor(X_data[i], cv2.COLOR_RGB2GRAY)
+        bat.append(image)
+    X_data = np.reshape(bat, (-1, 32, 32, 1))
+    return X_data
+
 # Convert image to grayscale
-X_train_gray = cv2.cvtColor(X_train, cv2.COLOR_BGR2GRAY)
-X_test_gray = cv2.cvtColor(X_test, cv2.COLOR_BGR2GRAY)
-X_validation_gray = cv2.cvtColor(X_validation, cv2.COLOR_BGR2GRAY)
+X_train_gray = convert_to_grayscale(X_train)
+X_test_gray = convert_to_grayscale(X_test)
+X_validation_gray = convert_to_grayscale(X_validation)
 
 # New step equalize histogram of the image for training
 X_train_gray = cv2.equalizeHist(X_train_gray)

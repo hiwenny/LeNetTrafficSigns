@@ -130,6 +130,7 @@ def evaluate(X_data, y_data):
 
 # ==================================================== #
 
+## needs something like foreach, can only handle single-image
 ## Convert image to grayscale
 #X_train_gray = cv2.cvtColor(X_train, cv2.COLOR_BGR2GRAY)
 #X_test_gray = cv2.cvtColor(X_test, cv2.COLOR_BGR2GRAY)
@@ -149,7 +150,7 @@ X_test_gray = convert_to_grayscale(X_test)
 X_validation_gray = convert_to_grayscale(X_validation)
 
 # New step equalize histogram of the image for training
-X_train_gray = cv2.equalizeHist(X_train_gray)
+X_train_gray = np.array([cv2.equalizeHist(X_train_gray) for image in X_train_gray])
 
 X_train_gray, y_train = shuffle(X_train_gray, y_train)
 

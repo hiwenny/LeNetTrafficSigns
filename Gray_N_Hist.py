@@ -49,53 +49,53 @@ def LeNet(x, input_shape, output_classes):
     # Arguments used for tf.truncated_normal, randomly defines variables for the weights and biases for each layer
     mu = 0
     sigma = 0.1
-    
+
     # TODO: Layer 1: Convolutional. Input = 32x32x1. Output = 28x28x6.
     conv1_W = tf.Variable(tf.truncated_normal(shape=(5, 5, input_shape[2], 6), mean = mu, stddev = sigma))
     conv1_b = tf.Variable(tf.zeros(6))
     conv1   = tf.nn.conv2d(x, conv1_W, strides=[1, 1, 1, 1], padding='VALID') + conv1_b
-    
+
     # TODO: Activation.
     conv1 = tf.nn.relu(conv1)
-    
+
     # TODO: Pooling. Input = 28x28x6. Output = 14x14x6.
     conv1 = tf.nn.max_pool(conv1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
-    
+
     # TODO: Layer 2: Convolutional. Output = 10x10x16.
     conv2_W = tf.Variable(tf.truncated_normal(shape=(5, 5, 6, 16), mean = mu, stddev = sigma))
     conv2_b = tf.Variable(tf.zeros(16))
     conv2   = tf.nn.conv2d(conv1, conv2_W, strides=[1, 1, 1, 1], padding='VALID') + conv2_b
-    
+
     # TODO: Activation.
     conv2 = tf.nn.relu(conv2)
-    
+
     # TODO: Pooling. Input = 10x10x16. Output = 5x5x16.
     conv2 = tf.nn.max_pool(conv2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
-    
+
     # TODO: Flatten. Input = 5x5x16. Output = 400.
     conn1 = flatten(conv2)
-    
+
     # TODO: Layer 3: Fully Connected. Input = 400. Output = 120.
     conn1_W = tf.Variable(tf.truncated_normal(shape=(400, 120), mean = mu, stddev = sigma))
     conn1_b = tf.Variable(tf.zeros(120))
     conn1   = tf.matmul(conn1, conn1_W) + conn1_b
-    
+
     # TODO: Activation.
     conn1 = tf.nn.relu(conn1)
-    
+
     # TODO: Layer 4: Fully Connected. Input = 120. Output = 84.
     conn2_W = tf.Variable(tf.truncated_normal(shape=(120, 84), mean = mu, stddev = sigma))
     conn2_b = tf.Variable(tf.zeros(84))
     conn2   = tf.matmul(conn1, conn2_W) + conn2_b
-    
+
     # TODO: Activation.
     conn2 = tf.nn.relu(conn2)
-    
+
     # TODO: Layer 5: Fully Connected. Input = 84. Output = 10.
     conn3_W = tf.Variable(tf.truncated_normal(shape=(84, output_classes), mean = mu, stddev = sigma))
     conn3_b = tf.Variable(tf.zeros(output_classes))
     logits  = tf.matmul(conn2, conn3_W) + conn3_b
-    
+
     return logits
 
 ### Train your model here.
@@ -137,6 +137,11 @@ X_train_gray = np.array([cv2.equalizeHist(image) for image in X_train_gray])
 X_test_gray = np.array([cv2.equalizeHist(image) for image in X_test_gray])
 X_validation_gray = np.array([cv2.equalizeHist(image) for image in X_validation_gray])
 
+# Reshaping back into valid shapes
+X_train_gray = np.reshape(X_train_gray, (-1, 32, 32, 1))
+X_test_gray = np.reshape(X_test_gray, (-1, 32, 32, 1))
+X_validation_gray = np.reshape(X_validation_gray, (-1, 32, 32, 1))
+
 X_train_gray, y_train = shuffle(X_train_gray, y_train)
 
 # Normalization to center the image value distribution at 0.
@@ -145,15 +150,21 @@ X_train_normalized_gray = (X_train_gray - 128.0)/128.0
 X_test_normalized_gray = (X_test_gray - 128.0)/128.0
 X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
 
+# Reassign the shapes
+n_train = len(X_train_normalized_gray)
+n_validation = len(X_validation_normalized_gray)
+n_test = len(X_test_normalized_gray)
+image_shape = X_train_normalized_gray[0].shape
+n_classes = len(set(y_train))
+
 print(np.mean(X_train_normalized_gray))
 print(np.mean(X_test_normalized_gray))
 print(np.mean(X_validation_normalized_gray))
-print('RGB norm shape:', X_train_normalized_gray.shape)
-print('RGB norm shape indiv:', X_train_normalized_gray[0].shape)
-print('y shape:', y_train.shape)
+print("Grey norm shape:", X_train_normalized_gray.shape)
+print("Gray norm shape indiv:", X_train_normalized_gray[0].shape)
+print("y shape:", y_train.shape)
 
-image_shape = X_train_normalized_gray[0].shape
-x = tf.placeholder(tf.float32, (None, 32, 32, image_shape[2]))
+x = tf.placeholder(tf.float32, (None, 32, 32, 1))
 y = tf.placeholder(tf.int32, (None))
 one_hot_y = tf.one_hot(y, n_classes)
 
@@ -182,7 +193,7 @@ X_train_normalized_gray, y_train = shuffle(X_train_normalized_gray, y_train)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     num_examples = len(X_train_normalized_gray)
-    
+
     print("Training normalized gray...")
     print()
     for i in range(N_EPOCHS):
@@ -191,12 +202,12 @@ with tf.Session() as sess:
             end = offset + BATCH_SIZE
             batch_x, batch_y = X_train_normalized_gray[offset:end], y_train[offset:end]
             sess.run(training_operation, feed_dict={x: batch_x, y: batch_y})
-        
+
         validation_accuracy = evaluate(X_validation_normalized_gray, y_validation)
         print("EPOCH {} ...".format(i+1))
         print("Validation Accuracy = {:.3f}".format(validation_accuracy))
         print()
-    
+
     saver.save(sess, './lenetnormalizedgray')
     print("Model saved")
 

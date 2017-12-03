@@ -6,6 +6,7 @@ import cv2
 from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
 import random
+#% matplotlib inline
 
 # TODO: Fill this in based on where you saved the training and testing data
 
@@ -102,21 +103,7 @@ def LeNet(x, input_shape, output_classes):
 ### Once a final model architecture is selected,
 ### the accuracy on the test set should be calculated and reported as well.
 ### Feel free to use as many code cells as needed.
-x = tf.placeholder(tf.float32, (None, 32, 32, image_shape[2]))
-y = tf.placeholder(tf.int32, (None))
-one_hot_y = tf.one_hot(y, n_classes)
 
-rate = 0.001
-
-logits = LeNet(x, image_shape, n_classes)
-cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=one_hot_y, logits=logits)
-loss_operation = tf.reduce_mean(cross_entropy)
-optimizer = tf.train.AdamOptimizer(learning_rate = rate)
-training_operation = optimizer.minimize(loss_operation)
-
-correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(one_hot_y, 1))
-accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-saver = tf.train.Saver()
 
 def evaluate(X_data, y_data):
     num_examples = len(X_data)
@@ -130,11 +117,7 @@ def evaluate(X_data, y_data):
 
 # ==================================================== #
 
-## needs something like foreach, can only handle single-image
-## Convert image to grayscale
-#X_train_gray = cv2.cvtColor(X_train, cv2.COLOR_BGR2GRAY)
-#X_test_gray = cv2.cvtColor(X_test, cv2.COLOR_BGR2GRAY)
-#X_validation_gray = cv2.cvtColor(X_validation, cv2.COLOR_BGR2GRAY)
+# NORMALIZED GRAY
 
 def convert_to_grayscale(X_data):
     bat = []
@@ -150,7 +133,14 @@ X_test_gray = convert_to_grayscale(X_test)
 X_validation_gray = convert_to_grayscale(X_validation)
 
 # New step equalize histogram of the image for training
-X_train_gray = np.array([cv2.equalizeHist(X_train_gray) for image in X_train_gray])
+X_train_gray = np.array([cv2.equalizeHist(image) for image in X_train_gray])
+X_test_gray = np.array([cv2.equalizeHist(image) for image in X_test_gray])
+X_validation_gray = np.array([cv2.equalizeHist(image) for image in X_validation_gray])
+
+# Reshaping back into valid shapes
+X_train_gray = np.reshape(X_train_gray, (-1, 32, 32, 1))
+X_test_gray = np.reshape(X_test_gray, (-1, 32, 32, 1))
+X_validation_gray = np.reshape(X_validation_gray, (-1, 32, 32, 1))
 
 X_train_gray, y_train = shuffle(X_train_gray, y_train)
 
@@ -160,15 +150,21 @@ X_train_normalized_gray = (X_train_gray - 128.0)/128.0
 X_test_normalized_gray = (X_test_gray - 128.0)/128.0
 X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
 
+# Reassign the shapes
+n_train = len(X_train_normalized_gray)
+n_validation = len(X_validation_normalized_gray)
+n_test = len(X_test_normalized_gray)
+image_shape = X_train_normalized_gray[0].shape
+n_classes = len(set(y_train))
+
 print(np.mean(X_train_normalized_gray))
 print(np.mean(X_test_normalized_gray))
 print(np.mean(X_validation_normalized_gray))
-print('RGB norm shape:', X_train_normalized_gray.shape)
-print('RGB norm shape indiv:', X_train_normalized_gray[0].shape)
-print('y shape:', y_train.shape)
+print("Grey norm shape:", X_train_normalized_gray.shape)
+print("Gray norm shape indiv:", X_train_normalized_gray[0].shape)
+print("y shape:", y_train.shape)
 
-image_shape = X_train_normalized_gray[0].shape
-x = tf.placeholder(tf.float32, (None, 32, 32, image_shape[2]))
+x = tf.placeholder(tf.float32, (None, 32, 32, 1))
 y = tf.placeholder(tf.int32, (None))
 one_hot_y = tf.one_hot(y, n_classes)
 

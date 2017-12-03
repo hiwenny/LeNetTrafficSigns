@@ -103,21 +103,7 @@ def LeNet(x, input_shape, output_classes):
 ### Once a final model architecture is selected,
 ### the accuracy on the test set should be calculated and reported as well.
 ### Feel free to use as many code cells as needed.
-x = tf.placeholder(tf.float32, (None, 32, 32, image_shape[2]))
-y = tf.placeholder(tf.int32, (None))
-one_hot_y = tf.one_hot(y, n_classes)
 
-rate = 0.001
-
-logits = LeNet(x, image_shape, n_classes)
-cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=one_hot_y, logits=logits)
-loss_operation = tf.reduce_mean(cross_entropy)
-optimizer = tf.train.AdamOptimizer(learning_rate = rate)
-training_operation = optimizer.minimize(loss_operation)
-
-correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(one_hot_y, 1))
-accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-saver = tf.train.Saver()
 
 def evaluate(X_data, y_data):
     num_examples = len(X_data)
@@ -143,20 +129,16 @@ def convert_to_grayscale(X_data):
 
 # Convert image to grayscale
 X_train_gray = convert_to_grayscale(X_train)
-X_test_gray = X_test
-#X_test_gray = convert_to_grayscale(X_test)
-#X_validation_gray = convert_to_grayscale(X_validation)
-X_validation_gray = X_validation
+X_test_gray = convert_to_grayscale(X_test)
+X_validation_gray = convert_to_grayscale(X_validation)
 
 X_train_gray, y_train = shuffle(X_train_gray, y_train)
 
 # Normalization to center the image value distribution at 0.
 # As recommended, image normalization is by (x - 128) / 128
 X_train_normalized_gray = (X_train_gray - 128.0)/128.0
-X_test_normalized_gray = X_test_gray
-X_validation_normalized_gray = X_validation_gray
-#X_test_normalized_gray = (X_test_gray - 128.0)/128.0
-#X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
+X_test_normalized_gray = (X_test_gray - 128.0)/128.0
+X_validation_normalized_gray = (X_validation_gray - 128.0)/128.0
 
 print(np.mean(X_train_normalized_gray))
 print(np.mean(X_test_normalized_gray))

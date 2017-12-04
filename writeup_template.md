@@ -19,65 +19,46 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/visualization.jpg "Visualization"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
-
-## Rubric Points
-###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
+[image1]: ./data_hist.png 
+[image2]: ./images_plot.png 
 
 ---
 ###Writeup / README
 
 ####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
-
 ###Data Set Summary & Exploration
-
-####1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
-
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set is 34799
+* The size of the validation set is 4410
+* The size of test set is 12630
+* The shape of a traffic sign image is 32, 32, 3
+* The number of unique classes/labels in the data set is 43
 
 ####2. Include an exploratory visualization of the dataset.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Perhaps the most important information from the visualization is the histogram, which shows the distribution of the training data. Intuitively, a model that's been trained using highly skewed data will have a tendency to favor the output with the most data. For a better model we can 'hedge' that using augmented versions of the data, not only on the ones that are lacking but all of them to make the dataset large enough to generalize the model, as in [Jeremy Shannon](https://github.com/jeremy-shannon/CarND-Traffic-Sign-Classifier-Project)'s implementation.
 
-![alt text][image1]
+In regards of this project it is outside the scope, though.
+
+![Histogram of Training Data][image1]
+
+Upon plotting parts of the dataset it is apparent that some preprocessing might be needed since the images vary widely.
+
+![Original Image Dataset][image2]
 
 ###Design and Test a Model Architecture
 
 ####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-I started with a model trained on the raw image data to see how it performs. It was abysmal.
+I started with a model trained on the raw image data to see how it performs. It was abysmal. Then again it was only 10 epochs; perhaps with more iterations it will eventually reach the same performance level.
 
-After normalization the performance improved slightly, but still nowhere near usable.
+The first thing I did after that was to normalize the data in hopes that it would converge faster as now the distribution is centered around origin. It did, to a certain extent. After normalization the performance improved - from 0.05 to around 0.3, but still not at a level that's usable. 
 
-On the third attempt I preprocessed the images to grayscale then normalized them. This caused a significant performance boost. It could be that with traffic signs, colours serve more as a distraction than a useful feature.
+On the third attempt I preprocessed the images to grayscale then normalized them. This resulted in a significant performance boost. It could be that with traffic signs, colours serve more as a distraction than a useful feature.
 
 
-
-![alt text][image2]
-
-As a last step, I normalized the image data because ...
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
-
-![alt text][image3]
 
 The difference between the original data set and the augmented data set is the following ... 
 
@@ -89,15 +70,18 @@ My final model consisted of the following layers:
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Input         		| 32x32x1 Grayscale image   				    | 
-| Convolution 3x3     	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
 | RELU					|												|
 | Max pooling	      	| 2x2 stride,  outputs 14x14x6   				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
- 
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x16   |
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16   				|
+| Fully connected		| Inputs flattened 5x5x16 = 400, outputs 120	|
+| RELU					|												|
+| Fully connected		| Inputs flattened 120, outputs 84          	|
+| RELU					|												|
+| Fully connected		| Inputs flattened 84, outputs 10             	|
+
 
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
